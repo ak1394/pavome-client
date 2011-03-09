@@ -1,0 +1,524 @@
+<project name="pavome" default="release" basedir=".">
+	<property name="version" value="1.1.2" />
+	<property environment="env" />
+	<property name="enable_debug" value="false" />
+	<property name="dist.dir" value="dist" />
+	<property name="src.dir" value="src" />
+    <property name="midp.src.dir" value="src-midp" />
+    <property name="bb.src.dir" value="src-bb" />
+	<property name="lib.dir" value="lib" />
+	<property name="build.dir" value="build" />
+	<property name="resources" value="res" />
+	<property name="output.target" value="${ant.project.name}.jar" />
+	<property name="wtk.home" value="${env.WTK_HOME}" />
+	
+	<property name="bb43.home" value="C:/java/BlackBerry_JDE_4.3.0" />
+    <property name="bb43.dist" value="dist-bb43" />
+    <property name="bb50.home" value="C:/java/BlackBerry JDE 5.0.0" />
+    <property name="bb50.dist" value="dist-bb50" />
+	
+    <property name="bb.build.dir" value="build-bb" />
+	<property name="lwuit.src.dir" value="../lwuit-head/src" />
+	<property name="lwuit.bb.src.dir" value="../lwuit-bb/src" />
+    <property name="bb.eclipse.dir" value="C:\Documents and Settings\anton\My Documents\workspacebb\mocobb\src" />  
+
+	<taskdef resource="antenna.properties" classpath="${lib.dir}/antenna-bin-1.2.0-beta.jar" />
+	<typedef resource="bb-ant-defs.xml" classpath="${lib.dir}/bb-ant-tools.jar" />
+
+	<property name="bootlib" value="${lib.dir}/cldcapi11.jar" />
+	<path id="wtklibs">
+		<pathelement path="${lib.dir}/midpapi20.jar" />
+		<pathelement path="${lib.dir}/mmapi.jar" />
+		<pathelement path="${lib.dir}/jsr75.jar" />
+		<pathelement path="${lib.dir}/jsr082.jar" />
+		<pathelement path="${lib.dir}/jsr184.jar" />
+		<pathelement path="${lib.dir}/m2g1_0b.jar" />
+	</path>
+
+	<target name="prepare">
+		<mkdir dir="${build.dir}" />
+		<mkdir dir="${dist.dir}" />
+		<mkdir dir="${build.dir}/META-INF" />
+		<copy todir="${build.dir}">
+			<fileset dir="${resources}">
+				<exclude name="**/default.res" />
+				<exclude name="**/Thumbs.db" />
+			</fileset>
+		</copy>
+        <copy todir="${build.dir}">
+            <fileset dir="theme/default">
+                <exclude name="**/default.conf" />
+                <exclude name="**/Thumbs.db" />
+                <exclude name="**/*.gif" />
+            </fileset>
+        </copy>
+		<mkdir dir="${bb.build.dir}" />
+		<mkdir dir="${bb.build.dir}/src" />
+		<mkdir dir="${bb.build.dir}/res" />
+		<mkdir dir="${bb.build.dir}/preprocessed" />
+		<mkdir dir="${bb.build.dir}/classes" />
+        <tstamp/>
+	</target>
+
+	<target name="resource" depends="prepare">
+		<taskdef classpath="lib/ResourceEditor.jar" classname="com.sun.lwuit.tools.resourcebuilder.LWUITTask" name="build" />
+        	
+        <build dest="${build.dir}/busy-anim.res">
+            <animation file="theme/default/ani-busy2.gif" name="wait" />
+        </build>
+
+        <build dest="${build.dir}/progress-anim.res">
+            <animation file="theme/default/progress.gif" name="progress" />
+        </build>
+
+		<!--
+        <build dest="${build.dir}/icons.res">
+            <image file="theme/default/avatar_small.png" name="avatar_small" indexed="true" />
+            <image file="theme/default/avatar.png" name="avatar" indexed="true" />
+
+            <image file="theme/default/follow.png" name="follow" indexed="true" />
+            <image file="theme/default/unfollow.png" name="unfollow" indexed="true" />
+
+            <image file="theme/default/mention.png" name="mention" indexed="true" />
+            <image file="theme/default/check.png" name="check" indexed="true" />
+            <image file="theme/default/close.png" name="close" indexed="true" />
+            <image file="theme/default/rotate.png" name="rotate" indexed="true" />
+            <image file="theme/default/trash.png" name="trash" indexed="true" />
+            <image file="theme/default/http_link.png" name="http_link" indexed="true" />
+            <image file="theme/default/retweet.png" name="retweet" indexed="true" />
+            <image file="theme/default/downvote.png" name="downvote" indexed="true" />
+            <image file="theme/default/upvote.png" name="upvote" indexed="true" />
+
+            <image file="theme/default/photo16.png" name="photo16" indexed="false" />
+            <image file="theme/default/video16.png" name="video16" indexed="false" />
+            <image file="theme/default/sound16.png" name="sound16" indexed="false" />
+            <image file="theme/default/star16.png" name="star16" indexed="false" />
+            <image file="theme/default/irt16.png" name="irt16" indexed="false" />
+            <image file="theme/default/downvote16.png" name="downvote16" indexed="false" />
+            <image file="theme/default/upvote16.png" name="upvote16" indexed="false" />
+            <image file="theme/default/view16.png" name="view16" indexed="false" />
+            <image file="theme/default/keypad16.png" name="keypad16" indexed="false" />
+
+            <image file="theme/default/channels.png" name="channels" indexed="true" />
+            <image file="theme/default/more.png" name="more" indexed="true" />
+            <image file="theme/default/text.png" name="text" indexed="true" />
+            <image file="theme/default/photo.png" name="photo" indexed="true" />
+            <image file="theme/default/video.png" name="video" indexed="true" />
+            <image file="theme/default/record.png" name="record" indexed="true" />
+            <image file="theme/default/mail.png" name="mail" indexed="true" />
+            <image file="theme/default/attach.png" name="attach" indexed="true" />
+            <image file="theme/default/irt.png" name="irt" indexed="true" />
+            <image file="theme/default/irt32.png" name="irt32" indexed="true" />
+
+            <image file="theme/default/channels32.png" name="channels32" indexed="true" />
+            <image file="theme/default/more32.png" name="more32" indexed="true" />
+            <image file="theme/default/photo32.png" name="photo32" indexed="true" />
+            <image file="theme/default/audio32.png" name="audio32" indexed="true" />
+            <image file="theme/default/mail32.png" name="mail32" indexed="true" />
+            <image file="theme/default/folder32.png" name="folder32" indexed="true" />
+            <image file="theme/default/blank32.png" name="blank32" indexed="true" />
+
+            <image file="theme/default/channels48.png" name="channels48" indexed="true" />
+            <image file="theme/default/more48.png" name="more48" indexed="true" />
+            <image file="theme/default/photo48.png" name="photo48" indexed="true" />
+            <image file="theme/default/video48.png" name="video48" indexed="true" />
+            <image file="theme/default/text48.png" name="text48" indexed="true" />
+            <image file="theme/default/mail48.png" name="mail48" indexed="true" />
+            <image file="theme/default/arrow-up48.png" name="arrow-up48" indexed="true" />
+            
+            <image file="theme/default/exit.png" name="exit" indexed="true" />
+            <image file="theme/default/settings.png" name="settings" indexed="true" />
+            <image file="theme/default/home.png" name="home" indexed="true" />
+            <image file="theme/default/view.png" name="view" indexed="true" />
+            <image file="theme/default/retweet-new.png" name="retweet-new" indexed="true" />
+            <image file="theme/default/retweeted16.png" name="retweeted16" indexed="false" />
+            <image file="theme/default/favorite.png" name="favorite" indexed="true" />
+            <image file="theme/default/unfavorite.png" name="unfavorite" indexed="true" />
+            <image file="theme/default/search.png" name="search" indexed="true" />
+            <image file="theme/default/arrow-up.png" name="arrow-up" indexed="true" />
+
+            <image file="theme/default/profile32.png" name="profile32" indexed="true" />
+            <image file="theme/default/tweet32.png" name="tweet32" indexed="true" />
+            <image file="theme/default/home32.png" name="home32" indexed="true" />
+            <image file="theme/default/mention32.png" name="mention32" indexed="true" />
+            <image file="theme/default/avatar32.png" name="avatar32" indexed="true" />
+            <image file="theme/default/search32.png" name="search32" indexed="true" />
+        </build>
+        -->
+
+		<build dest="${build.dir}/default.res">
+			<font name="sys-main" createBitmap="false" system="FACE_SYSTEM;STYLE_PLAIN;SIZE_SMALL" />
+			<font name="sys-main-bold" createBitmap="false" system="FACE_SYSTEM;STYLE_BOLD;SIZE_SMALL" />
+
+			<font name="sys-medium" createBitmap="false" system="FACE_SYSTEM;STYLE_PLAIN;SIZE_MEDIUM" />
+			<font name="sys-medium-bold" createBitmap="false" system="FACE_SYSTEM;STYLE_BOLD;SIZE_MEDIUM" />
+
+			<font name="sys-large" createBitmap="false" system="FACE_SYSTEM;STYLE_PLAIN;SIZE_LARGE" />
+			<font name="sys-large-bold" createBitmap="false" system="FACE_SYSTEM;STYLE_BOLD;SIZE_LARGE" />
+
+			<font name="large" createBitmap="false" system="FACE_SYSTEM;STYLE_PLAIN;SIZE_MEDIUM" />
+			<font name="large-bold" createBitmap="false" system="FACE_SYSTEM;STYLE_BOLD;SIZE_MEDIUM" />
+
+			<font name="small" createBitmap="false" system="FACE_SYSTEM;STYLE_PLAIN;SIZE_SMALL" />
+			<font name="small-bold" createBitmap="false" system="FACE_SYSTEM;STYLE_BOLD;SIZE_SMALL" />
+
+            <font name="main" logicalName="Arial" createBitmap="true" size="14" charset="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,;:!@/\*()[]{}|#$%^&amp;&lt;&gt;?&apos;&quot;+- _АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТтУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯяáéíóúÁÉÍÓÚüÜñÑ¿¡" />
+            <font name="main-bold" bold="true" createBitmap="true" logicalName="Arial" size="14" charset="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,;:!@/\*()[]{}|#$%^&amp;&lt;&gt;?&apos;&quot;+- _АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТтУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯяáéíóúÁÉÍÓÚüÜñÑ¿¡" />
+
+            <font name="tiny" logicalName="DejaVu Sans" createBitmap="true" size="10" charset="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,;:!@/\*()[]{}|#$%^&amp;&lt;&gt;?&apos;&quot;+- _АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТтУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯяáéíóúÁÉÍÓÚüÜñÑ¿¡" />
+            <font name="tiny-bold" bold="true" createBitmap="true" logicalName="DejaVu Sans Bold" size="10" charset="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,;:!@/\*()[]{}|#$%^&amp;&lt;&gt;?&apos;&quot;+- _АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТтУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯяáéíóúÁÉÍÓÚüÜñÑ¿¡" />
+			
+			<l10n name="localize">
+				<locale name="en" file="l10n/localize.properties" />
+			</l10n>
+
+			<theme file="theme/default/default.conf" name="Default" />
+			
+		</build>
+		
+	</target>
+
+	<target name="compile" depends="prepare, resource">
+		<javac srcdir="${src.dir}:${midp.src.dir}" destdir="${build.dir}" target="1.1" source="1.2" bootclasspath="${bootlib}" debug="${enable_debug}">
+			<classpath>
+				<path refid="wtklibs" />
+				<pathelement path="${lib.dir}/LWUIT.jar" />
+			</classpath>
+		</javac>
+	</target>
+
+	<target name="rresource" depends="resource">
+		<delete file="res/default.res" />
+		<copy file="build/default.res" tofile="res/default.res" />
+	</target>
+
+	<target name="manifest-clean" depends="prepare">
+		<property name="midlet.name" value="pavo" />
+		<manifest file="${build.dir}/META-INF/MANIFEST.MF">
+			<attribute name="Manifest-Version" value="1.0" />
+			<attribute name="MIDlet-Vendor" value="PavoMe" />
+			<attribute name="MIDlet-Version" value="${version}" />
+			<attribute name="MIDlet-1" value="PavoMe,/peacock46x48.png,me.pavo.Main" />
+			<attribute name="MicroEdition-Configuration" value="CLDC-1.1" />
+			<attribute name="MIDlet-Name" value="PavoMe" />
+			<attribute name="MicroEdition-Profile" value="MIDP-2.0" />
+			<attribute name="Pavo-Server" value="delta.pavo.me:2222" />
+			<attribute name="Navi-Key-Hidden" value="true" />
+			<attribute name="Nokia-MIDlet-On-Screen-Keypad" value="no" />
+		</manifest>
+	</target>
+
+	<target name="manifest-anton" depends="prepare">
+		<property name="midlet.name" value="anton" />
+		<manifest file="${build.dir}/META-INF/MANIFEST.MF">
+			<attribute name="Manifest-Version" value="1.0" />
+			<attribute name="MIDlet-Vendor" value="PavoMe" />
+			<attribute name="MIDlet-Version" value="${version}" />
+			<attribute name="MIDlet-1" value="PavoMe,/peacock46x48.png,me.pavo.Main" />
+			<attribute name="MicroEdition-Configuration" value="CLDC-1.1" />
+			<attribute name="MIDlet-Name" value="anton" />
+			<attribute name="MicroEdition-Profile" value="MIDP-2.0" />
+			<attribute name="Pavo-Token" value="Cabk3DSFbxKxRevZ" />
+			<attribute name="Pavo-Server" value="delta.pavo.me:2222" />
+			<attribute name="Navi-Key-Hidden" value="true" />
+			<attribute name="Nokia-MIDlet-On-Screen-Keypad" value="no" />
+		</manifest>
+	</target>
+
+	<target name="manifest-ak" depends="prepare">
+		<property name="midlet.name" value="ak" />
+		<manifest file="${build.dir}/META-INF/MANIFEST.MF">
+			<attribute name="Manifest-Version" value="1.0" />
+			<attribute name="MIDlet-Vendor" value="PavoMe" />
+			<attribute name="MIDlet-Version" value="${version}" />
+			<attribute name="MIDlet-1" value="PavoMe,/peacock46x48.png,me.pavo.Main" />
+			<attribute name="MicroEdition-Configuration" value="CLDC-1.1" />
+			<attribute name="MIDlet-Name" value="ak" />
+			<attribute name="MicroEdition-Profile" value="MIDP-2.0" />
+			<attribute name="Pavo-Token" value="BWMFhFiVHCgGcY0B" />
+			<attribute name="Pavo-Server" value="delta.pavo.me:2222" />
+			<attribute name="Navi-Key-Hidden" value="true" />
+			<attribute name="Nokia-MIDlet-On-Screen-Keypad" value="no" />
+		</manifest>
+	</target>
+
+	<target name="manifest-pavo" depends="prepare">
+		<property name="midlet.name" value="pavopavo" />
+		<manifest file="${build.dir}/META-INF/MANIFEST.MF">
+			<attribute name="Manifest-Version" value="1.0" />
+			<attribute name="MIDlet-Vendor" value="PavoMe" />
+			<attribute name="MIDlet-Version" value="${version}" />
+			<attribute name="MIDlet-1" value="PavoMe,/peacock46x48.png,me.pavo.Main" />
+			<attribute name="MicroEdition-Configuration" value="CLDC-1.1" />
+			<attribute name="MIDlet-Name" value="PavoMe-pavo" />
+			<attribute name="MicroEdition-Profile" value="MIDP-2.0" />
+			<attribute name="Pavo-Token" value="NhdDdm9m89GX1-Zq" />
+			<attribute name="Pavo-Server" value="delta.pavo.me:2222" />
+		</manifest>
+	</target>
+
+    <target name="manifest-alpha" depends="prepare">
+        <property name="midlet.name" value="pavo-alpha-${DSTAMP}" />
+        <manifest file="${build.dir}/META-INF/MANIFEST.MF">
+            <attribute name="Manifest-Version" value="1.0" />
+            <attribute name="MIDlet-Vendor" value="PavoMe" />
+            <attribute name="MIDlet-Version" value="${version}" />
+            <attribute name="MIDlet-1" value="PavoMe-A,/peacock46x48.png,me.pavo.Main" />
+            <attribute name="MicroEdition-Configuration" value="CLDC-1.1" />
+            <attribute name="MIDlet-Name" value="PavoMe-A" />
+            <attribute name="MicroEdition-Profile" value="MIDP-2.0" />
+            <attribute name="Navi-Key-Hidden" value="true" />
+            <attribute name="Nokia-MIDlet-On-Screen-Keypad" value="no" />
+        </manifest>
+    </target>
+
+	<target name="manifest-pavo-beta" depends="prepare">
+		<property name="midlet.name" value="beta-pavopavo" />
+		<manifest file="${build.dir}/META-INF/MANIFEST.MF">
+			<attribute name="Manifest-Version" value="1.0" />
+			<attribute name="MIDlet-Vendor" value="PavoMe" />
+			<attribute name="MIDlet-Version" value="${version}" />
+			<attribute name="MIDlet-1" value="PavoMe,/peacock46x48.png,me.pavo.Main" />
+			<attribute name="MicroEdition-Configuration" value="CLDC-1.1" />
+			<attribute name="MIDlet-Name" value="beta-pavopavo" />
+			<attribute name="MicroEdition-Profile" value="MIDP-2.0" />
+			<attribute name="Pavo-Token" value="NhdDdm9m89GX1-Zq" />
+			<attribute name="Pavo-Server" value="beta.pavo.me:2222" />
+			<attribute name="Navi-Key-Hidden" value="true" />
+			<attribute name="Nokia-MIDlet-On-Screen-Keypad" value="no" />
+		</manifest>
+	</target>
+
+	<target name="manifest-anton-beta" depends="prepare">
+		<property name="midlet.name" value="beta-anton" />
+		<manifest file="${build.dir}/META-INF/MANIFEST.MF">
+			<attribute name="Manifest-Version" value="1.0" />
+			<attribute name="MIDlet-Vendor" value="PavoMe" />
+			<attribute name="MIDlet-Version" value="${version}" />
+			<attribute name="MIDlet-1" value="PavoMe,/peacock46x48.png,me.pavo.Main" />
+			<attribute name="MicroEdition-Configuration" value="CLDC-1.1" />
+			<attribute name="MIDlet-Name" value="anton-beta" />
+			<attribute name="MicroEdition-Profile" value="MIDP-2.0" />
+			<attribute name="Pavo-Token" value="Cabk3DSFbxKxRevZ" />
+			<attribute name="Pavo-Server" value="beta.pavo.me:2222" />
+			<attribute name="Navi-Key-Hidden" value="true" />
+			<attribute name="Nokia-MIDlet-On-Screen-Keypad" value="no" />
+		</manifest>
+	</target>
+
+	<target name="manifest-ak-beta" depends="prepare">
+		<property name="midlet.name" value="ak-beta" />
+		<manifest file="${build.dir}/META-INF/MANIFEST.MF">
+			<attribute name="Manifest-Version" value="1.0" />
+			<attribute name="MIDlet-Vendor" value="PavoMe" />
+			<attribute name="MIDlet-Version" value="${version}" />
+			<attribute name="MIDlet-1" value="PavoMe,/peacock46x48.png,me.pavo.Main" />
+			<attribute name="MicroEdition-Configuration" value="CLDC-1.1" />
+			<attribute name="MIDlet-Name" value="ak-beta" />
+			<attribute name="MicroEdition-Profile" value="MIDP-2.0" />
+			<attribute name="Pavo-Token" value="BWMFhFiVHCgGcY0B" />
+			<attribute name="Pavo-Server" value="beta.pavo.me:2222" />
+			<attribute name="Navi-Key-Hidden" value="true" />
+			<attribute name="Nokia-MIDlet-On-Screen-Keypad" value="no" />
+		</manifest>
+	</target>
+
+	<target name="obfuscate" depends="compile, resource">
+		<taskdef name="proguard" classname="proguard.ant.ProGuardTask" classpath="${lib.dir}/proguard.jar" />
+		<proguard obfuscate="on" optimize="off" usemixedcaseclassnames="off" verbose="on" shrink="on" microedition="off" allowaccessmodification="on" overloadaggressively="on" repackageclasses="" ignorewarnings="off">
+			<libraryjar name="${bootlib}" />
+			<libraryjar refid="wtklibs" />
+			<injar name="${build.dir}" />
+			<injar name="${lib.dir}/LWUIT.jar" filter="!META-INF/MANIFEST.MF" />
+			<outjar name="${dist.dir}/${midlet.name}-obfuscated.jar" />
+			<keep name="me.pavo.Main" />
+		</proguard>
+	</target>
+
+	<target name="preverify" depends="obfuscate">
+		<wtkpreverify classpathref="wtklibs" jarfile="${dist.dir}/${midlet.name}-obfuscated.jar" tojarfile="${dist.dir}/${midlet.name}.jar" />
+		<delete file="${dist.dir}/${midlet.name}-obfuscated.jar" />
+	</target>
+
+	<target name="bb-prepare" depends="resource">
+		<mkdir dir="${bb.build.dir}" />
+		<mkdir dir="${bb.build.dir}/src" />
+		<mkdir dir="${bb.build.dir}/res" />
+		<mkdir dir="${bb.build.dir}/preprocessed" />
+		<mkdir dir="${bb.build.dir}/obfuscated" />
+        <mkdir dir="${bb.build.dir}/classes" />
+        <mkdir dir="${bb43.dist}" />
+        <mkdir dir="${bb50.dist}" />
+		<copy todir="${bb.build.dir}/res">
+			<fileset dir="${resources}">
+				<exclude name="**/default.res" />
+				<exclude name="**/Thumbs.db" />
+			</fileset>
+		</copy>
+        <copy file="${build.dir}/default.res" todir="${bb.build.dir}/res" />
+        <copy file="${build.dir}/busy-anim.res" todir="${bb.build.dir}/res" />
+        <copy file="${build.dir}/progress-anim.res" todir="${bb.build.dir}/res" />
+	</target>
+
+	<target name="bb-source-43" depends="bb-prepare">
+		<copy todir="${bb.build.dir}/src" verbose="false">
+			<!-- LWUIT sources -->
+			<fileset dir="${lwuit.src.dir}">
+				<exclude name="**/.svn/**" />
+				<!-- skip files not compatible with BB  -->
+				<exclude name="**/M3G.java" />
+				<exclude name="**/SVGImage.java" />
+				<exclude name="**/SVGImplementation.java" />
+				<exclude name="**/Transition3D.java" />
+			</fileset>
+			<!-- LWUIT blackberry implementation sources -->
+			<fileset dir="${lwuit.bb.src.dir}">
+				<exclude name="**/.svn/**" />
+				<!-- skip files not compatible with 430 API  -->
+				<exclude name="**/BlackBerryTouchSupport.java" />
+				<exclude name="**/BlackBerryTouchImplementation.java" />
+			</fileset>
+            <fileset dir="${src.dir}"/>
+            <fileset dir="${bb.src.dir}">
+            	<exclude name="**/Main50.java" />            	
+            </fileset>
+		</copy>
+        <wtkpreprocess verbose="false" srcdir="${bb.build.dir}/src" destdir="${bb.build.dir}/preprocessed" symbols="RIM" printsymbols="true"/>
+	</target>
+
+    <target name="bb-source-50" depends="bb-prepare">
+        <copy todir="${bb.build.dir}/src" verbose="false">
+            <!-- LWUIT sources -->
+            <fileset dir="${lwuit.src.dir}">
+                <exclude name="**/.svn/**" />
+                <!-- skip files not compatible with BB  -->
+                <exclude name="**/M3G.java" />
+                <exclude name="**/SVGImage.java" />
+                <exclude name="**/SVGImplementation.java" />
+                <exclude name="**/Transition3D.java" />
+            </fileset>
+            <!-- LWUIT blackberry implementation sources -->
+            <fileset dir="${lwuit.bb.src.dir}">
+                <exclude name="**/.svn/**" />
+            </fileset>
+            <fileset dir="${src.dir}"/>
+            <fileset dir="${bb.src.dir}">
+                <exclude name="**/Main43.java" />               
+            </fileset>
+        </copy>
+        <wtkpreprocess verbose="false" srcdir="${bb.build.dir}/src" destdir="${bb.build.dir}/preprocessed" symbols="RIM,touch" printsymbols="true"/>
+    </target>
+	
+    <target name="bb-eclipse" depends="bb-source-43">
+    	  <delete includeemptydirs="true">
+    	    <fileset dir="${bb.eclipse.dir}" includes="**/*" defaultexcludes="false"/>
+    	  </delete>
+        <copy todir="${bb.eclipse.dir}" verbose="false">
+            <fileset dir="${bb.build.dir}/preprocessed"/>
+            <fileset dir="${bb.build.dir}/res"/>
+            <fileset file="${build.dir}/*.res"/>
+        </copy>
+    </target>
+	
+	<target name="bb-compile" depends="bb-prepare">
+		<javac destdir="${bb.build.dir}/classes" bootclasspath="${bb.home}/lib/net_rim_api.jar" debug="on" optimize="on" source="1.3" target="1.1">
+            <src path="${bb.build.dir}/preprocessed" />
+		</javac>
+
+		<!-- this is the place to apply obfuscation.  for this sample we just copy the files without modification.
+        if you want to add further obfuscation you should do this here.  note that RAPC already does 'some level' of
+        obfuscation. -->
+		<copy todir="${bb.build.dir}/obfuscated" verbose="false">
+			<fileset dir="${bb.build.dir}/classes">
+			</fileset>
+		</copy>
+
+		<!-- preverification follows.  this makes sure to use the preverifyer from the blackberry jde and not the one from
+         the WTK.  i have read somewhere that this is important but i cannot confirm that.-->
+		<exec os="Windows NT Windows 95 Windows 98 Windows 2000 Windows XP" dir="${bb.build.dir}/obfuscated" executable="${bb.home}/bin/preverify.exe" failonerror="true" resolveExecutable="true">
+			<arg value="-d" />
+			<arg path="${bb.build.dir}/preverified" />
+			<arg value="-classpath" />
+			<arg value="${bb.home}/lib/net_rim_api.jar" />
+			<arg value="." />
+		</exec>
+
+		<!-- copy the resources to the class files. -->
+		<copy todir="${bb.build.dir}/preverified" verbose="false">
+			<fileset dir="${bb.build.dir}/res"/>
+		</copy>
+
+		<!-- call the rapc compiler to build the cod file. -->
+		<rapc output="${bb.modulename}" jdehome="${bb.home}" destdir="${bb.dist}" generatesourcelist="true" verbose="false" quiet="true" nowarn="true" srcdir="${bb.build.dir}/preverified" exepath="${bb.home}/bin">
+			<jdp vendor="PavoMe" version="${version}" type="cldc" icon="../${resources}/peacock46x48.png" title="PavoMe">
+			</jdp>
+		</rapc>
+
+		<!-- if you sign your blackberry apps, do this here. -->
+		<sigtool jdehome="${bb.home}" codfile="${bb.dist}/${bb.modulename}.cod"/>
+
+		<jadtool input="${bb.dist}/${bb.modulename}.jad" destdir="${bb.dist}/smallcod">
+			<fileset dir="${bb.dist}" includes="${bb.modulename}.cod" />
+		</jadtool>
+
+		<!-- generate ALX file. -->
+		<!--
+		<alx destdir="${bb.dist}" filename="${bb.modulename}.alx">
+			<application id="${bb.modulename}" name="applicationname" vendor="vendor" version="1.0" description="description" copyright="vendor">
+				<codset greaterthanequal="${alxinstallminversion}">
+					<fileset dir="${bb.dist}" includes="${bb.modulename}.cod" />
+				</codset>
+			</application>
+		</alx>
+		-->
+	</target>
+
+	<target name="bb-compile-43" depends="bb-prepare, bb-source-43">
+		<antcall target="bb-compile">
+            <param name="bb.modulename" value="pavome" />
+            <param name="bb.home" value="${bb43.home}" />
+            <param name="bb.dist" value="${bb43.dist}" />
+		</antcall>
+	</target>
+
+    <target name="bb-compile-50" depends="bb-prepare, bb-source-50">
+        <antcall target="bb-compile">
+            <param name="bb.modulename" value="pavome" />
+            <param name="bb.home" value="${bb50.home}" />
+            <param name="bb.dist" value="${bb50.dist}" />
+        </antcall>
+    </target>
+	
+	<target name="clean">
+		<delete dir="${build.dir}" />
+		<delete dir="${dist.dir}" />
+        <delete dir="${bb43.dist}" />
+        <delete dir="${bb50.dist}" />
+        <delete dir="${bb.build.dir}" />
+	</target>
+
+	<target name="release" depends="manifest-clean, obfuscate, preverify">
+	</target>
+
+	<target name="anton" depends="manifest-anton, obfuscate, preverify">
+	</target>
+
+	<target name="ak" depends="manifest-ak, obfuscate, preverify">
+	</target>
+
+    <target name="pavo" depends="manifest-pavo, obfuscate, preverify">
+    </target>
+	
+    <target name="alpha" depends="manifest-alpha, obfuscate, preverify">
+    </target>
+
+	<target name="anton-beta" depends="manifest-anton-beta, obfuscate, preverify">
+	</target>
+
+	<target name="pavo-beta" depends="manifest-pavo-beta, obfuscate, preverify">
+	</target>
+
+	<target name="ak-beta" depends="manifest-ak-beta, obfuscate, preverify">
+	</target>
+
+</project>
